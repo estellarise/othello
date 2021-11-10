@@ -11,11 +11,11 @@ int main(){
     int row, col;
 
     /* ask to load a game state */
-    boardLoadFile= "sampleBoard";
+    boardLoadFile= "sampleBoard1";
 
     /* init board */
     board Board = board();
-    if (boardLoadFile!=""){
+    if (boardLoadFile!=""){ // skip loading preload if no file is given
         ifstream input;
         input.open(boardLoadFile.c_str() );
         for (row = 0; row < 8; row++){
@@ -30,7 +30,7 @@ int main(){
         aiTimeLimit=atoi(s.c_str() );
         input.close();
     }
-
+        
     /* Display */
     Board.displayBoard();
     return 0;
