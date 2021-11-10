@@ -6,16 +6,17 @@
 using namespace std;
 
 int main(){
-    string s, boardLoadFile = "";
+    string s, boardLoadFile = "cleanBoard";
     int whoseTurn = 1, aiTimeLimit = 5;
     int row, col;
 
     /* ask to load a game state */
-    boardLoadFile= "sampleBoard1";
+    boardLoadFile= "sampleBoard2";
 
     /* init board */
     board Board = board();
-    if (boardLoadFile!=""){ // skip loading preload if no file is given
+
+    if (boardLoadFile!="cleanBoard"){ // skip loading preload if no file is given
         ifstream input;
         input.open(boardLoadFile.c_str() );
         for (row = 0; row < 8; row++){
@@ -25,7 +26,7 @@ int main(){
             }
         }
         getline(input, s);
-        whoseTurn = s[0] -'1'; //player 1 = 0, player 2 = 1
+        whoseTurn = s[0] -'0'; //player 1 = 0, player 2 = 1
         getline(input, s);
         aiTimeLimit=atoi(s.c_str() );
         input.close();
@@ -33,5 +34,7 @@ int main(){
         
     /* Display */
     Board.displayBoard();
+    //Board.legalMoves(1); //white
+    Board.legalMoves(0); //black
     return 0;
 }

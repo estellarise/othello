@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun Nov  7 13:24:45 2021
+# Make data base, printed on Tue Nov  9 22:15:24 2021
 
 # Variables
 
@@ -65,9 +65,9 @@ ROS_PACKAGE_PATH = /opt/ros/noetic/share
 # environment
 ROS_PYTHON_VERSION = 3
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-becd24b0-90dc-495e-a404-20c489acb7b3.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-7d039c3e-72cf-49ac-b55c-7439f4848ac8.sock
 # environment
-VSCODE_CWD = /home/melina/Code/ai/othello
+VSCODE_CWD = /home/melina
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
@@ -75,7 +75,7 @@ PATH = /opt/ros/noetic/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/ga
 # environment
 XDG_SESSION_DESKTOP = gnome
 # environment
-SESSION_MANAGER = local/swift3:@/tmp/.ICE-unix/1144,unix/swift3:/tmp/.ICE-unix/1144
+SESSION_MANAGER = local/swift3:@/tmp/.ICE-unix/1057,unix/swift3:/tmp/.ICE-unix/1057
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -164,8 +164,6 @@ XDG_CURRENT_DESKTOP = GNOME
 %D = $(patsubst %/,%,$(dir $%))
 # default
 MAKE_COMMAND := make
-# environment
-OLDPWD = /home/melina/Code/ai
 # default
 .VARIABLES := 
 # automatic
@@ -192,8 +190,6 @@ GDK_BACKEND = x11
 +F = $(notdir $+)
 # environment
 QT_ACCESSIBILITY = 1
-# environment
-DESKTOP_AUTOSTART_ID = 10453fed0843ee1c82163629657944980500000011440007
 # default
 MAKEFILES := 
 # automatic
@@ -207,11 +203,13 @@ SBX_CHROME_API_RQ = 1
 # environment
 SANDBOX_LD_LIBRARY_PATH = /opt/ros/noetic/lib
 # environment
-GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/ec7f42f7_14f1_40ff_ba63_37a8102e7005
+GJS_DEBUG_TOPICS = JS ERROR;JS LOG
+# environment
+GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/c1692473_fce4_4c9c_a373_c9fbf2da95c7
 # automatic
 ^F = $(notdir $^)
 # environment
-GNOME_TERMINAL_SERVICE = :1.125
+GNOME_TERMINAL_SERVICE = :1.74
 # default
 SUFFIXES := 
 # environment
@@ -220,6 +218,8 @@ WAYLAND_DISPLAY = wayland-0
 CHROME_DESKTOP = code-url-handler.desktop
 # default
 .INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
+# environment
+GJS_DEBUG_OUTPUT = stderr
 # default
 .RECIPEPREFIX := 
 # environment
@@ -227,7 +227,7 @@ LANG = C
 # environment
 TERM = xterm-256color
 # environment
-VSCODE_PID = 9865
+VSCODE_PID = 2634
 # variable set hash-table stats:
 # Load=108/1024=11%, Rehash=0, Collisions=16/133=12%
 
@@ -237,9 +237,9 @@ VSCODE_PID = 9865
 
 # Directories
 
-# . (device 2055, inode 1317172): 13 files, no impossibilities.
+# . (device 2055, inode 1317172): 16 files, no impossibilities.
 
-# 13 files, no impossibilities in 1 directories.
+# 16 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -278,7 +278,6 @@ debug:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
- 
 #  recipe to execute (from 'Makefile', line 10):
 	g++ -g -o debugOthello.out othello.cpp board.cpp 
 
@@ -286,6 +285,7 @@ othello.out: board.o othello.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+ 
 #  recipe to execute (from 'Makefile', line 2):
 	g++ -o othello.out board.o othello.o
 
@@ -339,12 +339,12 @@ board.h:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 21 / storage = 183 B / avg = 8 B
-# current buf: size = 8162 B / used = 183 B / count = 21 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 24 / storage = 224 B / avg = 9 B
+# current buf: size = 8162 B / used = 224 B / count = 24 / avg = 9 B
 
-# strcache performance: lookups = 39 / hit rate = 46%
+# strcache performance: lookups = 42 / hit rate = 42%
 # hash-table stats:
-# Load=21/8192=0%, Rehash=0, Collisions=1/39=3%
-# Finished Make data base on Sun Nov  7 13:24:45 2021
+# Load=24/8192=0%, Rehash=0, Collisions=1/42=2%
+# Finished Make data base on Tue Nov  9 22:15:24 2021
 
  
