@@ -62,40 +62,53 @@ void board::setTile(int row, int col, int newVal){
 
 void board::legalMoves(int playerNum){
     int row, col, hzOffset, vtOffset, currRow, currCol, currTile, legalMoveIdx = 0;
+    bool moveFound = false;
     for (row = 0; row < 8; row++){
         for (col = 0; col < 8; col++){
             currTile = updatedBoard[row][col];
-            if (currTile == '2'){ //if Tile empty
+            if (currTile == '2' ){ //if current tile is empty
                 for (hzOffset = -1; hzOffset <= 1; hzOffset++){
                     for (vtOffset = -1; vtOffset <= 1; vtOffset++){
                         if (hzOffset == 0 && vtOffset == 0){
                             continue; //Skip staying in place
                         }
-
                         /* find valid moves */
                         currRow = row + hzOffset; //temp var's to "foresee" which tiles we are eval'ing 
                         currCol = col + vtOffset;
                         
-                            while ( (currRow < 8 && currRow >= 0 && currCol < 8 && currCol >= 0) //within bounds of board
-                                && updatedBoard[currRow][currCol] == ('0'+ (1-playerNum) ) ){ //opposite of player PROB
+                        while ( (currRow < 8 && currRow >= 0 && currCol < 8 && currCol >= 0) ){ //within bounds of board
+                            char evalPiece = updatedBoard[currRow][currCol];
+                            if ( evalPiece == ('0'+ (1-playerNum) ) ){ //their color
                                 currRow+=hzOffset;
                                 currCol+=vtOffset; //travel in this dir
                             }
-                
-                        if (currRow != (row + hzOffset)  && currCol != (col + vtOffset) ){ //if not in adj tile
-                            //add to vector of valid moves
-                            //legalMovesList[ ((1 << (row + 2)) + col) ] = 1; //array of if a tile is a legal move or not
-                            //legalMovesList[row][col] = 1; //this move is valid //segfault
-                            cout << "(" << currRow - hzOffset<< ',' << currCol - vtOffset<< ')';
-                            cout <<  ": (" << row <<"," << col << ")" << endl;
-                            legalMoveIdx++;
+                            else if (evalPiece == '2' ){ //empty
+                                break;
+                            }
+                            else { //our color
+                                if (currRow != (row + hzOffset)  || currCol != (col + vtOffset) ){ //if not in adj tile
+                                    /*Display legal moves*/
+                                    //add to vector of valid moves
+                                    //legalMovesList[ ((1 << (row + 2)) + col) ] = 1; //array of if a tile is a legal move or not
+                                    //legalMovesList[row][col] = 1; //this move is valid //segfault
+                                    cout <<  "(" << row <<"," << col << "):";
+                                    cout << "(" << currRow << ',' << currCol << ')' << endl;
+                                    moveFound = true; //set flag that move has been found
+                                    legalMoveIdx++;
+                                }
+                                break;
+                            }
+                            
                         }
+                        if (moveFound){ break; } //if a move for this empty tile has been found, stop scanning this tile 
+                                                // for new ways to get to this tile
                     }
+                    
+                    if (moveFound){ break; }
                 } 
             }
-            /*Display legal moves*/
+            moveFound = false; //reset this flag
         }
     }
-
     std::cerr << "Number of legal moves:" << legalMoveIdx << endl;
 }

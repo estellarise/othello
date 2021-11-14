@@ -11,7 +11,7 @@ int main(){
     int row, col;
 
     /* ask to load a game state */
-    boardLoadFile= "sampleBoard2";
+    boardLoadFile= "sampleBoard3";
 
     /* init board */
     board Board = board();
@@ -35,6 +35,6 @@ int main(){
     /* Display */
     Board.displayBoard();
     //Board.legalMoves(1); //white
-    Board.legalMoves(0); //black
+    Board.legalMoves(1); //black
     return 0;
 }
