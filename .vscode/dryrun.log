@@ -1,7 +1,0 @@
-make --dry-run --always-make --keep-going --print-directory
-make: Entering directory '/home/melina/Code/ai/othello'
-g++ -c board.cpp
-g++ -c othello.cpp
-g++ -o othello.out board.o othello.o
-make: Leaving directory '/home/melina/Code/ai/othello'
- 
