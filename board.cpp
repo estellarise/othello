@@ -8,7 +8,7 @@
 using namespace std;
 
 Board::Board(){
-    updatedBoard.resize( 8, vector <char> (8 , 2) ); // Initialize 2D vec w/ 2's (empty spaces)
+    updatedBoard.resize( 8, vector <int> (8 , 2) ); // Initialize 2D vec w/ 2's (empty spaces)
     tilesToFlip.resize(25); //make 65 if it doesn't work
     potentialTilesToFlip.clear();
 };
@@ -25,7 +25,7 @@ void Board::displayBoard(){
         for (col = 0; col < 8; col++){
             char piece = updatedBoard[row][col];
             switch(piece){
-                case '2': //empty
+                case 2: //empty
                     if ( (row + col) & 1){ //if row + col is odd, then color is black
                         cout << "\u2593\u2593"; //black tile
                     }
@@ -34,11 +34,11 @@ void Board::displayBoard(){
                     } 
                     break;
 
-                case '0': //player 1
+                case 0: //player 1
                     cout << "\u26ab"; // black piece
                     break;
 
-                case '1': //player 2
+                case 1: //player 2
                     cout << "\u26aa"; // white piece
                     break;
                 default:
@@ -66,14 +66,16 @@ void Board::setTile(int row, int col, int newVal){ //not related to Tile class i
 }
 
 void Board::legalMoves(int playerNum){
-    int row, col, hzOffset, vtOffset, currRow, currCol, currTile, legalMoveIdx = 0;
+    int row, col, hzOffset, vtOffset, currRow, currCol, currTile;
+    legalMoveIdx = 0;
     bool moveFound = false;
     std::pair <int, int> tile;
-    auto it = tilesToFlip.begin();
+    //auto it = tilesToFlip.begin();
+    tilesToFlip.clear();
     for (row = 0; row < 8; row++){
         for (col = 0; col < 8; col++){
             currTile = updatedBoard[row][col];
-            if (currTile == '2' ){ //if current tile is empty
+            if (currTile == 2 ){ //if current tile is empty
                 for (hzOffset = -1; hzOffset <= 1; hzOffset++){
                     for (vtOffset = -1; vtOffset <= 1; vtOffset++){
                         if (hzOffset == 0 && vtOffset == 0){
@@ -85,13 +87,13 @@ void Board::legalMoves(int playerNum){
                         
                         while ( (currRow < 8 && currRow >= 0 && currCol < 8 && currCol >= 0) ){ //within bounds of Board
                             char evalPiece = updatedBoard[currRow][currCol];
-                            if ( evalPiece == ('0'+ (1-playerNum) ) ){ //their color
+                            if ( evalPiece == (1-playerNum) ){ //their color
                                 tile = make_pair(currRow, currCol);
                                 potentialTilesToFlip.push_back(tile);
                                 currRow+=hzOffset;
                                 currCol+=vtOffset; //travel in this dir
                             }
-                            else if (evalPiece == '2' ){ //empty
+                            else if (evalPiece == 2 ){ //empty
                                 potentialTilesToFlip.clear();
                                 break;
                             }
@@ -100,32 +102,30 @@ void Board::legalMoves(int playerNum){
                                     /*Display legal moves*/
                                     if (!moveFound){
                                         legalMoveIdx++;
-                                        cout <<  "(" << row <<"," << col << "):";
                                         cout << legalMoveIdx << ": ";
-                                        cout << "(" << currRow << ',' << currCol << ')' << endl;
+                                        cout <<  "(" << row <<"," << col << ")" << std::endl;
+                                        //cout << "Found by: (" << currRow << ',' << currCol << ')' << endl;
                                     }    
                                     //tilesToFlip.insert(tilesToFlip.begin(), tile(row,col) ); //insert at head 
-                        if (!potentialTilesToFlip.empty() ){
-                            for (int i = 0; i < potentialTilesToFlip.size(); i++){
-                                tilesToFlip[legalMoveIdx].push_back(potentialTilesToFlip[i]); // add tiles to flip at corr move
-                            }
-                            potentialTilesToFlip.clear();
-                        }
+                                    if (!potentialTilesToFlip.empty() ){
+                                        potentialTilesToFlip.push_back(make_pair(row, col) ); //add move as tile to "flip"
+                                        for (int i = 0; i < potentialTilesToFlip.size(); i++){
+                                            tilesToFlip[legalMoveIdx].push_back(potentialTilesToFlip[i]); // add tiles to flip at corr move
+                                        }
+                                        potentialTilesToFlip.clear();
+                                    }
                                     moveFound = true; //set flag that move has been found for this empty tile
                                 }
                                 break;
                             }
                         }
-                        //if (moveFound){ break; } //if a move for this empty tile has been found, stop scanning this tile 
-                                                // for new ways to get to this tile
                     }
-                    //if (moveFound){ break; }
                 } 
             }
             moveFound = false; //reset this flag
         }
     }
-    /*Error Checking*/
+    /*Error Checking
     std::cerr << "Number of legal moves:" << legalMoveIdx<< std::endl;
     for (int k = 0; k < tilesToFlip.size(); k++)
     {
@@ -136,4 +136,18 @@ void Board::legalMoves(int playerNum){
         }
         std::cerr<<std::endl;
     }
+    */
+}
+
+void Board::applyMove(int playerNum, int moveChosen){
+    //if (moveChosen > tilesToFlip.size() ){
+    if (tilesToFlip[moveChosen].empty() || (moveChosen > legalMoveIdx) ){
+        std::cerr << "Invalid move. Please select a valid move." << std::endl;
+        return;
+    }
+    for (int i = 0; i < tilesToFlip[moveChosen].size(); i++){
+        std::pair<int, int> tile = tilesToFlip[moveChosen][i];
+        setTile(tile.first, tile.second, playerNum);
+    }
+    displayBoard();
 }

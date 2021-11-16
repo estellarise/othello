@@ -22,7 +22,7 @@ int main(){
         for (row = 0; row < 8; row++){
             getline (input, s);
             for (col = 0; col < 8; col++){
-                board.setTile(row, col, s[col <<1]); //skip spaces
+                board.setTile(row, col, s[col <<1]-'0'); //skip spaces
             }
         }
         getline(input, s);
@@ -34,7 +34,9 @@ int main(){
         
     /* Display */
     board.displayBoard();
-    //Board.legalMoves(1); //white
     board.legalMoves(1); //black
+    board.applyMove(1, 2);
+    board.applyMove(1, 55);
+    board.applyMove(1, 92);
     return 0;
 }

@@ -12,7 +12,7 @@ class Board{
     void displayBoard();
     void setTile(int row, int col, int newVal);
     //private: //need to make board global to all files
-    std:: vector <std::vector<char> > updatedBoard; //actual board
+    std:: vector <std::vector<int> > updatedBoard; //actual board
     
     class Tile{
         int row;
@@ -24,8 +24,10 @@ class Board{
     //std:: vector < tiles[2] > tilesa;
     std:: vector <std::pair <int, int> > potentialTilesToFlip;
     std:: vector <std::vector <std::pair <int, int> > > tilesToFlip;
+    int legalMoveIdx;
 
     void legalMoves(int playerNum);
+    void applyMove(int playerNum, int moveChosen);
 };
 
 #endif
