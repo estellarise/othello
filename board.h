@@ -6,20 +6,24 @@
 #include <string>
 
 
-class board{
+class Board{
     public:
-    board();
+    Board();
     void displayBoard();
     void setTile(int row, int col, int newVal);
     //private: //need to make board global to all files
     std:: vector <std::vector<char> > updatedBoard; //actual board
-    std:: vector <std:: vector<int> > legalMovesList;
     
-    class tile{
-        tile(int row, int col); 
+    class Tile{
+        int row;
+        int col;
+        public:
+        Tile(int rowNum, int colNum); 
         
     };
-    std:: vector <tile> tiles;
+    //std:: vector < tiles[2] > tilesa;
+    std:: vector <std::pair <int, int> > potentialTilesToFlip;
+    std:: vector <std::vector <std::pair <int, int> > > tilesToFlip;
 
     void legalMoves(int playerNum);
 };

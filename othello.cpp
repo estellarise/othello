@@ -14,7 +14,7 @@ int main(){
     boardLoadFile= "sampleBoard3";
 
     /* init board */
-    board Board = board();
+    Board board = Board();
 
     if (boardLoadFile!="cleanBoard"){ // skip loading preload if no file is given
         ifstream input;
@@ -22,7 +22,7 @@ int main(){
         for (row = 0; row < 8; row++){
             getline (input, s);
             for (col = 0; col < 8; col++){
-                Board.setTile(row, col, s[col <<1]); //skip spaces
+                board.setTile(row, col, s[col <<1]); //skip spaces
             }
         }
         getline(input, s);
@@ -33,8 +33,8 @@ int main(){
     }
         
     /* Display */
-    Board.displayBoard();
+    board.displayBoard();
     //Board.legalMoves(1); //white
-    Board.legalMoves(1); //black
+    board.legalMoves(1); //black
     return 0;
 }
