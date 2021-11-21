@@ -9,7 +9,7 @@ using namespace std;
 
 Board::Board(){
     updatedBoard.resize( 8, vector <int> (8 , 2) ); // Initialize 2D vec w/ 2's (empty spaces)
-    tilesToFlip.resize(25); //make 65 if it doesn't work
+    //tilesToFlip.resize(25); //make 65 if it doesn't work
     potentialTilesToFlip.clear();
 };
 
@@ -65,13 +65,14 @@ void Board::setTile(int row, int col, int newVal){ //not related to Tile class i
     updatedBoard[row][col] = newVal; 
 }
 
-void Board::legalMoves(int playerNum){
+int Board::legalMoves(int playerNum){
     int row, col, hzOffset, vtOffset, currRow, currCol, currTile;
     legalMoveIdx = 0;
     bool moveFound = false;
     std::pair <int, int> tile;
     //auto it = tilesToFlip.begin();
     tilesToFlip.clear();
+    tilesToFlip.resize(25); //make 65 if it doesn't work
     for (row = 0; row < 8; row++){
         for (col = 0; col < 8; col++){
             currTile = updatedBoard[row][col];
@@ -103,8 +104,9 @@ void Board::legalMoves(int playerNum){
                                     if (!moveFound){
                                         legalMoveIdx++;
                                         cout << legalMoveIdx << ": ";
-                                        cout <<  "(" << row <<"," << col << ")" << std::endl;
-                                        //cout << "Found by: (" << currRow << ',' << currCol << ')' << endl;
+                                        cout <<  "(" << row <<"," << col << ")";
+                                        //cout << std::endl;
+                                        cout << "  Found by: (" << currRow << ',' << currCol << ')' << endl;
                                     }    
                                     //tilesToFlip.insert(tilesToFlip.begin(), tile(row,col) ); //insert at head 
                                     if (!potentialTilesToFlip.empty() ){
@@ -112,13 +114,14 @@ void Board::legalMoves(int playerNum){
                                         for (int i = 0; i < potentialTilesToFlip.size(); i++){
                                             tilesToFlip[legalMoveIdx].push_back(potentialTilesToFlip[i]); // add tiles to flip at corr move
                                         }
-                                        potentialTilesToFlip.clear();
+                                        //potentialTilesToFlip.clear(); //don't think it's needed
                                     }
                                     moveFound = true; //set flag that move has been found for this empty tile
                                 }
                                 break;
                             }
                         }
+                        potentialTilesToFlip.clear();
                     }
                 } 
             }
@@ -137,11 +140,12 @@ void Board::legalMoves(int playerNum){
         std::cerr<<std::endl;
     }
     */
+   return legalMoveIdx;
 }
 
 void Board::applyMove(int playerNum, int moveChosen){
     //if (moveChosen > tilesToFlip.size() ){
-    if (tilesToFlip[moveChosen].empty() || (moveChosen > legalMoveIdx) ){
+    if (tilesToFlip[moveChosen].empty() || (moveChosen > legalMoveIdx) ){ //first half of statement may be unnecessary
         std::cerr << "Invalid move. Please select a valid move." << std::endl;
         return;
     }

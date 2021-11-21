@@ -24,9 +24,9 @@ class Board{
     //std:: vector < tiles[2] > tilesa;
     std:: vector <std::pair <int, int> > potentialTilesToFlip;
     std:: vector <std::vector <std::pair <int, int> > > tilesToFlip;
-    int legalMoveIdx;
+    int legalMoveIdx; //needed by applyMove as well
 
-    void legalMoves(int playerNum);
+    int legalMoves(int playerNum);
     void applyMove(int playerNum, int moveChosen);
 };
 

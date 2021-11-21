@@ -1,6 +1,6 @@
 othello.out: board.o othello.o
 	g++ -o othello.out board.o othello.o
-othello.o: othello.cpp
+othello.o: othello.cpp othello.h board.cpp
 	g++ -c othello.cpp
 
 board.o: board.cpp board.h
