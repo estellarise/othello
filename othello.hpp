@@ -1,7 +1,7 @@
 #ifndef OTHELLO_H 
 #define OTHELLO_H
 
-#include "board.h"
+#include "board.hpp"
 void playGame(int firstPlayer, Board &board);
 
 bool playerIsAI[1];

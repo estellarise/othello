@@ -2,8 +2,8 @@
 #include <string>
 #include <fstream>
 #include <random>
-#include "board.h"
-#include "othello.h"
+#include "board.hpp"
+#include "othello.hpp"
 
 using namespace std;
 
@@ -87,31 +87,44 @@ int main(){
 void playGame(int firstPlayer, Board &board){
     int consecTurnsSkipped = 0, piecesOnBoard = 4, player= 0; //first player is black
     int moveChosen=-1, numOfLegalMoves;
+    string userMoveChosen;
+    bool moveIsValid;
+
     board.displayBoard();
     while (consecTurnsSkipped < 2 && piecesOnBoard < 64){
         numOfLegalMoves=board.legalMoves(player);
         //cerr << "Num of piecesOnBoard: " << piecesOnBoard  << endl;
-        if (numOfLegalMoves == 0){
+        if (numOfLegalMoves == 0){ //check if moves are available
             consecTurnsSkipped+=1;
             cout <<"No moves, skipping turn. "<< consecTurnsSkipped << endl;
             player= 1-player;
             continue;
         }
-        if (numOfLegalMoves == 1){
+        if (numOfLegalMoves == 1){ 
             cout << "Only one move, applying the move automatically." <<endl;
             moveChosen = 1;
         }
         else{
-            if (playerIsAI[player]){
+            if (playerIsAI[player]){ // if player number of AI, choose a random move for now. replace w/ search
                 std::random_device dev;
                 std::mt19937 rng(dev());
                 std::uniform_int_distribution<std::mt19937::result_type> distLegalMoves(1,numOfLegalMoves); // distribution in range [1, 6]
                 moveChosen = distLegalMoves(rng);
             }
             else{
-                while (moveChosen < 1 || moveChosen > numOfLegalMoves){
-                    cout << "Choose a move between 1 and " << numOfLegalMoves <<endl;
-                    cin >> moveChosen;
+                moveIsValid = true;
+                while (!(moveIsValid) || moveChosen < 1 || moveChosen > numOfLegalMoves){ //keep prompting user until a valid move # is selected
+                    cout << "Choose a move between 1 and " << numOfLegalMoves << ": ";
+                    cin >> userMoveChosen;
+                    for (int c = 0; c < userMoveChosen.size(); c++){
+                        if (!isdigit(userMoveChosen[c]) ){ //if any of the user input is not a number, invalid move 
+                            moveIsValid = false;                            
+                            break;
+                        }
+                    }
+                    if (moveIsValid){
+                        moveChosen = stoi(userMoveChosen);
+                    }
                 }
             }
         }
