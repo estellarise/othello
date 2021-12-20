@@ -103,10 +103,10 @@ int Board::legalMoves(int playerNum, bool showDisplay){
                             }
                             else { //our color
                                 if (currRow != (row + hzOffset) || currCol != (col + vtOffset) ){ //if not in adj tile
-                                    /*Display legal moves*/
-                                    if (!moveFound){
-                                        legalMoveIdx++;
+                                    if (!moveFound){ //this move has not been previously found
+                                        legalMoveIdx++; //indicate one more move has been found //move to tiles to flip if not working
                                         if (showDisplay){
+                                            /*Then Display legal moves*/
                                             cout << legalMoveIdx << ": ";
                                             cout <<  "(" << row <<"," << col << ")";
                                             //cout << std::endl;
@@ -155,11 +155,12 @@ void Board::applyMove(int playerNum, int moveChosen, bool showDisplay){
             std::cerr << "tilesToFlip is empty" << std::endl;
         }
         else{   
-            std::cerr << "Move Chosen: " << moveChosen << "legalIdx" << legalMoveIdx << std::endl;
+            std::cerr << "Move Chosen: " << moveChosen << " legalIdx" << legalMoveIdx << std::endl;
             std::cerr << "Invalid move. Please select a valid move." << std::endl;
         }
         return;
     }
+
     for (int i = 0; i < tilesToFlip[moveChosen].size(); i++){
         std::pair<int, int> tile = tilesToFlip[moveChosen][i];
         setTile(tile.first, tile.second, playerNum);

@@ -2,6 +2,8 @@
 #define OTHELLO_H
 
 #include "board.hpp"
+#include <chrono>
+
 void playGame(int firstPlayer, Board &board);
 int weights[] = {
         300, -100, 100,  50,  50, 100, -100,  300,
