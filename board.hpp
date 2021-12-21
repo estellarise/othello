@@ -18,10 +18,12 @@ class Board{
     std:: vector <std::vector <std::pair <int, int> > > tilesToFlip; // legalMoveIdx indicates which entry of this vec to execute
 
     int legalMoveIdx; //needed by applyMove as well
-    int numPieces[1];
+    //int numPieces[1];
     int legalMoves(int playerNum, bool showDisplay); //returns largest index of legal moves
     void applyMove(int playerNum, int moveChosen, bool showDisplay); //uses tilesToFlip to update the actual board
     int heuristic (int isMax);
+    std::vector<std::vector<int>> greed(int isMax);
+    int mobility (int isMax);
 };
 
 //int weights[64] ;

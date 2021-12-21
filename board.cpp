@@ -7,7 +7,7 @@
 
 using namespace std;
 
-int weights[]= {
+int weights[8][8]= {
         300, -100, 100,  50,  50, 100, -100,  300,
         -100, -200, -50, -50, -50, -50, -200, -100,
          100,  -50, 100,   0,   0, 100,  -50,  100,
@@ -21,9 +21,9 @@ int weights[]= {
 Board::Board(){
     consecTurnsSkipped = 0;
     piecesOnBoard = 4;
-    numPieces[0]=2; //black
-    numPieces[1]=2; //white
-    updatedBoard.resize( 8, vector <int> (8 , 2) ); // Initialize 2D vec w/ 2's (empty spaces)
+    //numPieces[0]=2; //black
+    //numPieces[1]=2; //white
+    updatedBoard.resize( 8, std::vector <int> (8 , 2) ); // Initialize 2D vec w/ 2's (empty spaces)
     //tilesToFlip.resize(25); //make 65 if it doesn't work
     potentialTilesToFlip.clear();
 };
@@ -180,9 +180,12 @@ void Board::applyMove(int playerNum, int moveChosen, bool showDisplay){
         std::pair<int, int> tile = tilesToFlip[moveChosen][i];
         setTile(tile.first, tile.second, playerNum);
     }
+
+    /* count number of tiles, more efficient but not working rn
     numPieces[playerNum]+= numTilesFlipped;
     numPieces[1-playerNum]-= numTilesFlipped-1; //change to minus 1 if off
-    //cerr<< "num white " << numPieces[1] << " num black " << numPieces [0] << endl;
+    cerr<< "num white " << numPieces[1] << " num black " << numPieces [0] << endl;
+    */
 
     if (showDisplay){
         displayBoard();
@@ -193,5 +196,51 @@ void Board::applyMove(int playerNum, int moveChosen, bool showDisplay){
 }
 
 int Board::heuristic(int isMax){
-    return 100;
+    std::vector<std::vector<int>> numPieces = greed(isMax);
+    int numStones = numPieces[0][0]+ numPieces[0][1];
+    int m = mobility(isMax);
+    int g = numPieces[0][isMax];
+    int w = numPieces[1][isMax];
+    int retVal;
+    if(numStones <= 20) { //early game 4-20
+        g = 0; 
+        m *=  (600);
+        retVal= g + m + w;
+    }
+    else if(numStones > 20 && numStones <= 55) { //midgame 21-55
+        g *= (-1);
+        m *= 500;  
+        w *=  (3);
+        retVal=(g + m + w );
+    }
+    else { //endgame 56-63
+        g *= 1200000;
+        retVal = g;
+    }
+
+    if (!isMax){
+        retVal *= -1;
+    }
+    return 10*retVal;
+}
+
+std::vector<std::vector<int>> Board::greed(int isMax){
+    std::vector<std::vector<int>> numPieces;
+    numPieces.resize( 2, std::vector <int> (2 , 0) ); // Initialize 2D vec w/ 2's (empty spaces)
+    int BW;
+    for (int row = 0; row < 8; row++){
+        for (int col = 0; col < 8; col++){
+            BW = updatedBoard[row][col];
+            numPieces[0][BW]+=1;
+            numPieces[1][BW]+= (weights[row][col]) ;
+        }
+    }
+    return numPieces;
+}
+
+int Board::mobility(int isMax){
+    int minMobility = legalMoves(1-isMax, false) ;
+    int maxMobility = legalMoves(isMax, false);
+    int diff = maxMobility - minMobility;
+    return diff;
 }
