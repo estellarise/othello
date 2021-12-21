@@ -81,13 +81,6 @@ int main(){
 
     /* Display */
     playGame(firstPlayer, board);
-    //board.displayBoard();
-    //board.legalMoves(0); //black
-    //board.applyMove(0, 2);
-    /*
-    board.applyMove(1, 55);
-    board.applyMove(1, 92);
-    */
     return 0;
 }
 
@@ -113,7 +106,6 @@ void playGame(int firstPlayer, Board &board){
             moveChosen = 1;
         }
         else{ //if more than one move left
-            //cerr << moveChosen;
             if (playerIsAI[player]){ 
                 start = std::chrono::steady_clock::now();
                 depth = 0;
@@ -121,16 +113,21 @@ void playGame(int firstPlayer, Board &board){
                 do{
                     depth++;
                     bestMove = theresTimeLeft;
+                    //cerr << "Minimax re-entry, depth " << depth << endl;
                     theresTimeLeft = miniMax(board, depth, INT_MIN, INT_MAX, player, true); // @
                     //cerr << "Minimax returns: "<< theresTimeLeft << endl;
-                }
-                while(theresTimeLeft > 0);
+                } while(theresTimeLeft > 0);
                 cout << "Time searched: " << since(start).count()<< "ms." << endl;
                 cout << "Searched to depth " << depth << "." << endl; //-1 ?
                 moveChosen = bestMove;
+                //cerr << "othello Move Chosen" << moveChosen << endl;
                 //moveChosen = 1;
-                /* 
-                // if player number of AI, choose a random move for now. replaced w/ minimax
+
+                /*
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> distLegalMoves(1,board.legalMoveIdx); // distribution in range [0, 1]
+    moveChosen= distLegalMoves(rng);
                 */
             }
             else{
@@ -156,11 +153,12 @@ void playGame(int firstPlayer, Board &board){
         board.piecesOnBoard++;
         board.consecTurnsSkipped = 0; //reset
         moveChosen = -1; //reset
-        cerr << "number of pieces " << board.piecesOnBoard << endl;
+        //cerr << "number of pieces " << board.piecesOnBoard << endl;
     }
 }
 
 int miniMax(Board prevBoard, int depth, int alpha, int beta, int isMax, bool completeLayer){
+    //cerr << "miniMax called by " << (isMax? "max white":"min black") << endl;
     // seed randomness
     std::random_device dev;
     std::mt19937 rng(dev());
@@ -170,27 +168,38 @@ int miniMax(Board prevBoard, int depth, int alpha, int beta, int isMax, bool com
     double time_elapsed = since(start).count();
     //cerr << "Time elapsed:" << time_elapsed << endl;
     //if (time_elapsed >= (aiTimeLimit *1000 -1) ){
-    if (time_elapsed >= (1000-1) ){
+    if (time_elapsed >= (10) ){
         return -1; // signal out of time
     }
-    Board foreseenBoard = prevBoard; // make copy of previous board
     int maxEval = INT_MIN, minEval = INT_MAX;
     int eval, numOfLegalMoves, bestMove, minRetVal, maxRetVal;
-    if (depth == 0 || foreseenBoard.consecTurnsSkipped >=2 || foreseenBoard.piecesOnBoard >=64){
-        return heuristic(isMax); // are isMax and player num correlated?
+    if (depth == 0 || prevBoard.consecTurnsSkipped >=2 || prevBoard.piecesOnBoard >=64){
+        cerr << "out of depth, returning" << endl;
+        return prevBoard.heuristic(isMax); // are isMax and player num correlated?
     }
+    
+    numOfLegalMoves= prevBoard.legalMoves(isMax, SHOW_DISPLAY); // @
     if (isMax){
-        foreseenBoard.legalMoves(isMax, SHOW_DISPLAY); // @
-        numOfLegalMoves= foreseenBoard.legalMoveIdx;
         for (int potentialMove = 1; potentialMove <= numOfLegalMoves; potentialMove++){
+            Board foreseenBoard = prevBoard; // make copy of previous board
+            //std::cerr << "  potential Move Chosen: " << potentialMove;
+            cerr << " legalIdx " << numOfLegalMoves<< std::endl;
             foreseenBoard.applyMove(isMax,potentialMove, SHOW_DISPLAY); // apply one move to temp board, then pass to minimax
+            /*
+            int numTilesFlipped = foreseenBoard.tilesToFlip[potentialMove].size();
+            foreseenBoard.numPieces[isMax]+= numTilesFlipped;
+            foreseenBoard.numPieces[1-isMax]-= numTilesFlipped-1; //change to minus 1 if off
+            cerr<< "num white " << foreseenBoard.numPieces[1] << " num black " << foreseenBoard.numPieces [0] << endl;
+            */
+
             eval = miniMax(foreseenBoard, depth - 1, alpha, beta, 0, SHOW_DISPLAY); //pass to min
             if (eval > maxEval){
                 maxEval = eval;
                 bestMove = potentialMove;
             }
             else if (eval == maxEval){
-                int coinToss = distLegalMoves(rng);
+                //int coinToss = distLegalMoves(rng);
+                int coinToss = 0;
                 if (coinToss){
                     bestMove= potentialMove;
                 }
@@ -202,9 +211,16 @@ int miniMax(Board prevBoard, int depth, int alpha, int beta, int isMax, bool com
         return maxRetVal;
     }
     else{
-        foreseenBoard.legalMoves(isMax, SHOW_DISPLAY);
-        numOfLegalMoves = foreseenBoard.legalMoveIdx;
         for (int potentialMove = 1; potentialMove <= numOfLegalMoves; potentialMove++){
+            Board foreseenBoard = prevBoard; // make copy of previous board
+            /*
+            int numTilesFlipped = foreseenBoard.tilesToFlip[potentialMove].size();
+            foreseenBoard.numPieces[isMax]+= numTilesFlipped;
+            foreseenBoard.numPieces[1-isMax]-= numTilesFlipped-1; //change to minus 1 if off
+            cerr<< "num white " << foreseenBoard.numPieces[1] << " num black " << foreseenBoard.numPieces [0] << endl;
+            */
+            //std::cerr << "  potential Move Chosen: " << potentialMove;
+            //cerr << " legalIdx" << numOfLegalMoves<< std::endl << endl;
             foreseenBoard.applyMove(isMax,potentialMove, SHOW_DISPLAY); // apply one move to temp board, then pass to minimax
             eval = miniMax(foreseenBoard, depth - 1, alpha, beta, 1, SHOW_DISPLAY); // pass to max
             if (eval < minEval){
@@ -212,7 +228,8 @@ int miniMax(Board prevBoard, int depth, int alpha, int beta, int isMax, bool com
                 bestMove = potentialMove;
             }
             else if (eval == minEval){
-                int coinToss = distLegalMoves(rng);
+                //int coinToss = distLegalMoves(rng);
+                int coinToss = 0;
                 if (coinToss){
                     bestMove = potentialMove;
                 }
@@ -224,8 +241,4 @@ int miniMax(Board prevBoard, int depth, int alpha, int beta, int isMax, bool com
         return minRetVal;
     }
     //return -29; // should never happen
-}
-
-int heuristic(int isMax){
-    return 100;
 }

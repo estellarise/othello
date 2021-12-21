@@ -7,9 +7,22 @@
 
 using namespace std;
 
+int weights[]= {
+        300, -100, 100,  50,  50, 100, -100,  300,
+        -100, -200, -50, -50, -50, -50, -200, -100,
+         100,  -50, 100,   0,   0, 100,  -50,  100,
+          50,  -50,   0,   0,   0,   0,  -50,   50,
+          50,  -50,   0,   0,   0,   0,  -50,   50,
+         100,  -50, 100,   0,   0, 100,  -50,  100,
+        -100, -200, -50, -50, -50, -50, -200, -100,
+         300, -100, 100,  50,  50, 100, -100,  300
+};
+
 Board::Board(){
     consecTurnsSkipped = 0;
     piecesOnBoard = 4;
+    numPieces[0]=2; //black
+    numPieces[1]=2; //white
     updatedBoard.resize( 8, vector <int> (8 , 2) ); // Initialize 2D vec w/ 2's (empty spaces)
     //tilesToFlip.resize(25); //make 65 if it doesn't work
     potentialTilesToFlip.clear();
@@ -75,7 +88,7 @@ int Board::legalMoves(int playerNum, bool showDisplay){
     std::pair <int, int> tile;
     //auto it = tilesToFlip.begin();
     tilesToFlip.clear();
-    tilesToFlip.resize(25); //make 65 if it doesn't work
+    tilesToFlip.resize(60); //make 60 if it doesn't work, can't push tiles onto non-allocated space
     for (row = 0; row < 8; row++){
         for (col = 0; col < 8; col++){
             currTile = updatedBoard[row][col];
@@ -152,23 +165,33 @@ void Board::applyMove(int playerNum, int moveChosen, bool showDisplay){
     //if (moveChosen > tilesToFlip.size() ){
     if (tilesToFlip[moveChosen].empty() || (moveChosen > legalMoveIdx) ){ //first half of statement may be unnecessary
         if (tilesToFlip[moveChosen].empty()){
+            std::cerr << "!!!       Move Chosen: " << moveChosen << " legalIdx" << legalMoveIdx << std::endl;
             std::cerr << "tilesToFlip is empty" << std::endl;
         }
         else{   
-            std::cerr << "Move Chosen: " << moveChosen << " legalIdx" << legalMoveIdx << std::endl;
+            std::cerr << "!!!       Move Chosen: " << moveChosen << " legalIdx" << legalMoveIdx << std::endl;
             std::cerr << "Invalid move. Please select a valid move." << std::endl;
         }
         return;
     }
+    int numTilesFlipped = tilesToFlip[moveChosen].size();
 
-    for (int i = 0; i < tilesToFlip[moveChosen].size(); i++){
+    for (int i = 0; i < numTilesFlipped; i++){
         std::pair<int, int> tile = tilesToFlip[moveChosen][i];
         setTile(tile.first, tile.second, playerNum);
     }
+    numPieces[playerNum]+= numTilesFlipped;
+    numPieces[1-playerNum]-= numTilesFlipped-1; //change to minus 1 if off
+    //cerr<< "num white " << numPieces[1] << " num black " << numPieces [0] << endl;
+
     if (showDisplay){
         displayBoard();
     }
     else{
         //std::cerr << "display suppressed" << endl;
     }
+}
+
+int Board::heuristic(int isMax){
+    return 100;
 }
